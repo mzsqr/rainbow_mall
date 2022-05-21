@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.ExploreMapper">
+    <insert id="addExploreRecord">
+        INSERT INTO explore(account, g_id, ex_date)
+        VALUES (#{account}, #{gId}, #{exDate})
+    </insert>
+
+    <select id="getOrdersBy" resultType="pro.lingwu.rainbowmall.dto.db.Explore" resultMap="exploreDetail">
+        SELECT
+        explore.account as account,
+               action,
+               explore.ex_date as exDate,
+               user.nickname as nickname,
+               goods.id as g_id,
+               goods.price as price,
+              goods.volume as volume,
+               goods.title as title,
+               goods.description as description,
+               goods.add_date as addDate,
+               goods.example as example,
+               goods.status as status,
+            photo.id as pId,
+            photo.pname as pname
+        FROM  explore,user,goods,photo
+        <trim prefix="WHERE" suffixOverrides="and | or">
+            explore.account=user.account and
+            goods.id=explore.g_id and
+            photo.g_id=goods.id and
+            <if test="nickname != null">nickname=#{nickname} and </if>
+            <if test="title != null">title=#{title} and </if>
+            <if test="ex_date != null">ex_date=#{ex_date} </if>
+        </trim>
+    </select>
+    <select id="getTotalBy" resultType="java.lang.Long">
+        SELECT COUNT(0) FROM explore,user,goods
+        <trim prefix="WHERE" suffixOverrides="and | or">
+            explore.account=user.account and
+            goods.id=explore.g_id and
+            <if test="nickname != null">nickname=#{nickname} and </if>
+            <if test="title != null">title=#{title} and </if>
+            <if test="ex_date != null">ex_date=#{ex_date} </if>
+        </trim>
+    </select>
+    <resultMap id="exploreDetail" type="pro.lingwu.rainbowmall.dto.db.Explore" autoMapping="true">
+<!--        <result property="account" column="account"/>-->
+        <association property="user" autoMapping="false">
+            <result column="nickname" property="nickname" />
+        </association>
+        <association property="goods" autoMapping="true">
+            <id property="id" column="g_id" />
+            <collection property="photos" ofType="pro.lingwu.rainbowmall.dto.db.Photo">
+                <id column="pid" property="id" />
+                <result column="pname" property="pname" />
+            </collection>
+        </association>
+    </resultMap>
+</mapper>

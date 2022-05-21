@@ -1,0 +1,26 @@
+.form-control:focus, .form-select:focus{
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+    outline: none;
+    box-shadow:none;
+}
+
+
+a{
+    text-decoration-line: none;
+    color: black;
+}
+
+a:hover{
+    color: orange;
+    text-decoration-line: underline;
+}

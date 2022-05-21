@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.OrderMapper">
+
+    <insert id="addOrder">
+        INSERT INTO `order`(status, goods_id, account, num, org_price, order_time, address)
+        VALUES (#{status}, #{goodsId}, #{account}, #{num}, #{orgPrice}, #{orderTime}, #{address})
+    </insert>
+
+    <update id="updateOrder">
+        UPDATE `order`
+        <set>
+            <if test="status != null">status=#{status}, </if>
+            <if test="num != null">num=#{num}, </if>
+            <if test="checked != null">checked=#{checked}, </if>
+            <if test="address != null">address=#{address} </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteOrderById">
+        DELETE FROM `order` WHERE id=#{id}
+    </delete>
+
+    <select id="findOrderByUserAccount" resultType="pro.lingwu.rainbowmall.dto.db.Order"
+            resultMap="detailOrderMap">
+        SELECT
+            <include refid="detailOrderSql"/>
+        FROM `order`, `goods`
+        WHERE `order`.account=#{account} and `order`.goods_id=`goods`.id
+        and `order`.status=0
+    </select>
+
+    <select id="findOrderByID" resultType="pro.lingwu.rainbowmall.dto.db.Order" resultMap="detailOrderMap">
+        SELECT
+        <include refid="detailOrderSql"/>
+        FROM `order`, `goods`
+        WHERE `order`.id=#{id} and `order`.goods_id=goods.id
+    </select>
+
+    <select id="findAllOrder" resultType="pro.lingwu.rainbowmall.dto.db.Order" resultMap="detailOrderMap">
+        SELECT
+        <include refid="detailOrderSql"/>
+        FROM `order`, `goods`
+        WHERE `order`.goods_id=goods.id
+    </select>
+    <select id="getTotalForAccount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM `order` WHERE account=#{account} and status=0
+    </select>
+    <select id="getTotalForAccountOuted" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM `order` WHERE account=#{account} and status&gt;2
+    </select>
+    <select id="getTotalForAccountNotOut" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM `order` WHERE account=#{account} and status=2
+    </select>
+    <select id="getTotal" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM `order`
+    </select>
+    <select id="getOrderByAccountAndGoods" resultType="pro.lingwu.rainbowmall.dto.db.Order">
+        SELECT * FROM `order` WHERE account=#{account} and goods_id=#{goodsId}
+    </select>
+    <select id="getOrderByAccountAndGoodsWithinCart" resultType="pro.lingwu.rainbowmall.dto.db.Order">
+        SELECT * FROM `order` WHERE account=#{account} and goods_id=#{goodsId} and `status`=0
+    </select>
+    <select id="getOrdersForBuyer"
+            resultType="pro.lingwu.rainbowmall.dto.db.Order"
+            resultMap="detailOrderMap">
+        SELECT <include refid="detailOrderSql"/>, pname
+        FROM `order`,goods,photo
+        WHERE goods.id=`order`.goods_id and goods.account=#{account} and goods.id=photo.g_id
+    </select>
+    <select id="getOrdersForBuyerTotal" resultType="java.lang.Long">
+        SELECT COUNT(0) FROM `order`,goods WHERE `order`.goods_id=goods.id and goods.account=#{account}
+    </select>
+    <select id="getOrderTodayStat" resultType="pro.lingwu.rainbowmall.dto.db.Stat">
+        SELECT COUNT(*) as num, `date` FROM
+        (
+            SELECT DATE(order_time) as `date` FROM `order`
+                    WHERE DATE(order_time)=CURRENT_DATE ORDER BY order_time
+        ) as stat group by date
+    </select>
+    <select id="getOrdersStat" resultType="pro.lingwu.rainbowmall.dto.db.Stat">
+        SELECT COUNT(*) as num, `date` FROM
+            (
+                SELECT DATE(order_time) as `date` FROM `order` ORDER BY order_time
+            ) as stat group by date
+    </select>
+    <select id="getOutOrder" resultType="pro.lingwu.rainbowmall.dto.db.Order"
+            resultMap="detailOrderMap">
+        SELECT
+        <include refid="detailOrderSql"/>
+        FROM `order`, `goods`
+        WHERE `order`.account=#{account} and `order`.goods_id=`goods`.id
+        and `order`.status &gt; 2
+    </select>
+    <select id="getNotOutOrder" resultType="pro.lingwu.rainbowmall.dto.db.Order"
+            resultMap="detailOrderMap">
+        SELECT
+        <include refid="detailOrderSql"/>
+        FROM `order`, `goods`
+        WHERE `order`.account=#{account} and `order`.goods_id=`goods`.id
+        and `order`.status=2
+    </select>
+
+
+    <resultMap id="detailOrderMap" type="pro.lingwu.rainbowmall.dto.db.Order" autoMapping="true">
+        <id column="id" property="id" />
+        <association property="goods" autoMapping="true">
+            <id column="g_id" property="id" />
+            <result column="g_account" property="account" />
+            <result column="g_status" property="status" />
+            <collection property="photos" ofType="pro.lingwu.rainbowmall.dto.db.Photo">
+                <result property="pname" column="pname" />
+            </collection>
+        </association>
+    </resultMap>
+
+    <sql id="detailOrderSql">
+        `order`.id as id,
+        `order`.status as `status`,
+        goods_id as goodsId,
+        `order`.account as `account`,
+checked,
+        num,
+        org_price as orgPrice,
+        goods.id as g_id,
+goods.account as g_account,
+        price,
+        volume,
+        title,
+        description,
+        add_date as addDate,
+        example,
+        goods.status as g_status,
+order_time as orderTime,
+            address
+    </sql>
+
+</mapper>

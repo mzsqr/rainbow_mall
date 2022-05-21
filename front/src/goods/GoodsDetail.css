@@ -1,0 +1,7 @@
+.goods-detail-img-i{
+    border: 4px solid white;
+}
+
+.goods-detail-img-i:hover{
+    border: 4px solid black;
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.UserLoginRecordMapper">
+    
+    <insert id="addRecord">
+        INSERT INTO ul_record(u_account, time, IP, os, explorer, `where`, role)
+        VALUES (#{uAccount}, #{time}, #{IP}, #{os}, #{explorer}, #{where}, #{role})
+    </insert>
+    
+    <select id="findRecord" resultType="pro.lingwu.rainbowmall.dto.db.UserLoginRecord">
+        SELECT *, u_account as account FROM ul_record
+        <where>
+            <if test="uAccount != null">u_account=#{uAccount}</if>
+            <if test="time != null">and `time`=#{time}</if>
+            <if test="IP != null">and IP=#{IP}</if>
+            <if test="os != null">and u_account=#{uAccount}</if>
+            <if test="explorer != null">and u_account=#{uAccount}</if>
+            <if test="where != null">and `where`=#{where}</if>
+            <if test="role != null">and role=#{role}</if>
+        </where>
+    </select>
+
+    <select id="getNumOfRecord" resultType="Long">
+        SELECT COUNT(*) FROM ul_record
+    </select>
+
+    <select id="getStatForLogin"
+            resultType="pro.lingwu.rainbowmall.dto.db.Stat">
+        SELECT COUNT(*) as num, `date` FROM(
+            SELECT DATE(time)
+                as `date`, u_account FROM ul_record ORDER BY time
+                                        ) as stat
+        GROUP BY `date`
+    </select>
+
+</mapper>

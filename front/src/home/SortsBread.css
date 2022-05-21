@@ -1,0 +1,11 @@
+nav ol li a:link{
+    color: darkgrey;
+}
+
+nav ol li a:visited{
+    color: darkgrey;
+}
+
+nav ol li a:hover{
+    color: orange;
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.PhotoMapper">
+
+    <insert id="addPhoto">
+        INSERT INTO photo(g_id, pname)
+        VALUES (#{gId}, #{pname})
+    </insert>
+
+    <delete id="rmPhotoById">
+        DELETE FROM photo WHERE id=#{id}
+    </delete>
+    <delete id="rmPhotosByGoods">
+        DELETE FROM photo WHERE g_id=#{gId}
+    </delete>
+
+</mapper>

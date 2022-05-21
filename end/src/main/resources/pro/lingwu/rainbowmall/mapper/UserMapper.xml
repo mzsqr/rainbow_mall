@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.UserMapper">
+    <insert id="addUser">
+        INSERT INTO user(account, password,
+                         nickname, phone,
+                         email, role, avatar, reg_date)
+        VALUES (#{account}, #{password},
+                #{nickname}, #{phone}, #{email},
+                #{role}, #{avatar}, #{regDate})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE user
+        <set>
+            <if test="password != null">password=#{password},</if>
+            <if test="nickname != null">nickname=#{nickname},</if>
+            <if test="phone != null">phone=#{phone},</if>
+            <if test="email != null">email=#{email},</if>
+            <if test="role != null">role=#{role},</if>
+            <if test="avatar != null">avatar=#{avatar},</if>
+            <if test="money != null">money=#{money}</if>
+        </set>
+        WHERE account=#{account}
+    </update>
+
+    <update id="changeMoney">
+        UPDATE user
+        SET money=money+#{much}
+        WHERE account=#{account}
+    </update>
+
+    <delete id="rmUser">
+        DELETE FROM user WHERE account=#{account}
+    </delete>
+
+    <select id="findUserBy" resultType="pro.lingwu.rainbowmall.dto.db.User">
+        SELECT * FROM user WHERE account=#{account}
+    </select>
+    <select id="getUserTodayStat" resultType="pro.lingwu.rainbowmall.dto.db.Stat">
+        SELECT COUNT(*) as num, `date` FROM
+            (
+                SELECT reg_date as `date` FROM `user`
+                WHERE reg_date=CURRENT_DATE
+            ) as stat group by date
+    </select>
+
+    <select id="getUserStat" resultType="pro.lingwu.rainbowmall.dto.db.Stat">
+        SELECT COUNT(*) as num, `date` FROM
+            (
+                SELECT reg_date as `date` FROM `user` ORDER BY reg_date
+            ) as stat group by date
+    </select>
+    <select id="querySeller" resultType="pro.lingwu.rainbowmall.dto.db.User">
+        SELECT * FROM user WHERE role=1 or role=2
+    </select>
+</mapper>

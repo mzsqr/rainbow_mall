@@ -1,0 +1,52 @@
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+
+
+server:
+  servlet:
+    context-path: /api/mall/
+#  ssl:
+#    enabled: true
+#    key-store: 'classpath:lingwu.pro.jks'
+#    key-store-type: JKS
+#    key-store-password: 97pc8hcor3
+#  port: 8081
+
+
+mybatis:
+  mapper-locations: 'classpath*:/pro/lingwu/rainbowmall/mapper/*Mapper.xml'
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
+
+spring:
+  datasource:
+    url: jdbc:mysql:///rainbow_mall
+    username: root
+    password: yxpbsqq@741
+    druid:
+      filters: wall,stat,log4j2
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 16MB
+      enabled: true
+
+  mail:
+    host: smtp.qq.com
+    username: microelectroniclyr@qq.com
+    password: nvblwyxvyfdqjeed
+    port: 465
+    protocol: smtps
+
+#  # 数据库初始化
+#  sql:
+#    init:
+#      schema-locations: classpath:sql/db_create.sql
+
+#logging:
+#  level:
+#    pro.lingwu.rainbowmall: debug

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.ManagerRecordMapper">
+    
+    <insert id="addRecord">
+        INSERT INTO manage_record
+        VALUES (#{eAccount}, #{gId}, #{time}, #{detail}, #{remark}, #{uId})
+    </insert>
+    
+    <select id="findRecord" resultType="pro.lingwu.rainbowmall.dto.db.ManagerRecord">
+        SELECT *, e_account as account FROM manage_record
+        <where>
+            <if test="eAccount != null">e_account=#{eAccount}</if>
+            <if test="gId != null">and `g_id`=#{gId}</if>
+            <if test="time != null">and time=#{time}</if>
+            <if test="detail != null">and detail=#{detail}</if>
+            <if test="remark != null">and remark=#{remark}</if>
+        </where>
+    </select>
+
+    <select id="getNumOfRecord" resultType="Long">
+        SELECT COUNT(*) FROM manage_record
+    </select>
+
+</mapper>

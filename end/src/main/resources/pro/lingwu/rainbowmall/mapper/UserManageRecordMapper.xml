@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.UserManageRecordMapper">
+
+    <insert id="addRecord">
+        INSERT INTO um_record(u_account, time, action) VALUES(#{account}, #{time}, #{action})
+    </insert>
+
+    <select id="getRecords" resultType="pro.lingwu.rainbowmall.dto.db.UserMangeRecord">
+        SELECT *, u_account as account FROM um_record
+        <where>
+            <if test="account!=null">account=#{account} and</if>
+            <if test="action!=null">action=#{action} and</if>
+            <if test="time!=null">time=#{time} and</if>
+        </where>
+    </select>
+
+</mapper>

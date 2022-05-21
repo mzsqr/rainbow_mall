@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pro.lingwu.rainbowmall.dao.GoodsMapper">
+
+    <insert id="addGoods">
+        INSERT INTO goods(id, price, volume, account, title, description, add_date, example, category)
+        VALUES (#{id},#{price}, #{volume}, #{account}, #{title}, #{description}, #{addDate}, #{example}, #{category})
+    </insert>
+
+    <update id="updateGoods">
+        UPDATE goods
+        <set>
+            <if test="price != null">price=#{price}, </if>
+            <if test="volume != null">volume=#{volume}, </if>
+            <if test="account != null">account=#{account}, </if>
+            <if test="title != null">title=#{title}, </if>
+            <if test="description != null">description=#{description}, </if>
+            <if test="addDate != null">addDate=#{addDate}, </if>
+            <if test="example != null">example=#{example}, </if>
+            <if test="status != null">status=#{status}, </if>
+            <if test="category != null">category=#{category} </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="rmGoods">
+        DELETE FROM goods WHERE id=#{id}
+    </delete>
+
+    <select id="getSomeGoods"
+            resultType="pro.lingwu.rainbowmall.dto.db.Goods"
+            resultMap="pro.lingwu.rainbowmall.dao.CartMapper.toCart">
+        SELECT
+            goods.id as id,
+            goods.price as price,
+            goods.volume as volume,
+            goods.account as account,
+            goods.title as title,
+            goods.description as description,
+            goods.add_date as add_date,
+            photo.id as pid,
+            photo.g_id as gId,
+            photo.pname as pname,
+            goods.category as category
+        FROM goods,photo
+        WHERE photo.g_id = goods.id and goods.id=#{id}
+    </select>
+
+    <select id="getGoodsById" resultType="pro.lingwu.rainbowmall.dto.db.Goods"
+    resultMap="pro.lingwu.rainbowmall.dao.CartMapper.toCart" >
+        SELECT
+            <include refid="goodsDetail" />
+        FROM goods,photo WHERE goods.id=#{id} and photo.g_id=#{id}
+    </select>
+
+    <select id="getGoodsesByAccount" resultType="pro.lingwu.rainbowmall.dto.db.Goods"
+            resultMap="pro.lingwu.rainbowmall.dao.CartMapper.toCart">
+        SELECT
+            <include refid="goodsDetail"/>
+        FROM goods,photo WHERE photo.g_id=goods.id
+<if test="account != null"> AND goods.account=#{account}</if>
+    </select>
+    <select id="getGoodsNum" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM goods WHERE account=#{account}
+    </select>
+
+    <select id="getGoodses" resultType="pro.lingwu.rainbowmall.dto.db.Goods"
+            resultMap="pro.lingwu.rainbowmall.dao.CartMapper.toCart">
+        SELECT
+            <include refid="goodsDetail"/>
+        FROM goods,photo WHERE goods.id=photo.g_id
+    </select>
+    <select id="getSellerByGoods" resultType="java.lang.String">
+        SELECT account FROM goods WHERE id=#{id}
+    </select>
+    <select id="searchGoods" resultType="pro.lingwu.rainbowmall.dto.db.Goods"
+            resultMap="pro.lingwu.rainbowmall.dao.CartMapper.toCart">
+        SELECT
+        <include refid="goodsDetail"/>
+        FROM goods,photo 
+        WHERE
+            goods.id=photo.g_id
+                <if test="keywords!=null">
+                    <trim prefix="AND" suffixOverrides="OR">
+                        <foreach collection="keywords" item="item">
+                            goods.title like CONCAT('%', #{item}, '%')
+                            OR goods.category like CONCAT('%', #{item}, '%')
+                            OR
+                        </foreach>
+                    </trim>
+                </if>
+            LIMIT 1000
+    </select>
+
+    <sql id="goodsDetail">
+        goods.id as id,
+        goods.price as price,
+        goods.volume as volume,
+        goods.example as example,
+        goods.status as status,
+        goods.account as account,
+        goods.title as title,
+        goods.description as description,
+        goods.add_date as add_date,
+        photo.id as pid,
+        photo.g_id as g_id,
+        photo.pname as pname,
+        goods.`category` as `category`
+    </sql>
+
+</mapper>

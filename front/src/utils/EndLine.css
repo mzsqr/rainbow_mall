@@ -1,0 +1,41 @@
+.end-line{
+    height: 50px;
+    position: relative;
+    width: 100%;
+}
+
+.page-end {
+    position: absolute;
+    text-align: center;
+    color: #ccccd0;
+    left: 50%;
+    width: 84px;
+    line-height: 20px;
+    font-size: 18px;
+    margin-left: -42px;
+    font-style: normal;
+    top: 20px;
+    display: inline;
+}
+
+.page-end::before {
+    content: ' ';
+    position: absolute;
+    height: 0;
+    line-height: 0;
+    border-top: 1px solid #e6e6e6;
+    width: 60px;
+    top: 50%;
+    right: 8rem;
+}
+
+.page-end::after {
+    content: ' ';
+    position: absolute;
+    height: 0;
+    line-height: 0;
+    border-top: 1px solid #e6e6e6;
+    width: 60px;
+    top: 50%;
+    left: 8rem;
+}
